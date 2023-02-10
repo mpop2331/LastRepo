@@ -1,0 +1,99 @@
+{
+    "xsappname": "poc",
+    "tenant-mode": "shared",
+    "scopes": [
+        {
+            "name": "$XSAPPNAME.mtcallback",
+            "description": "Subscription via SaaS Registry",
+            "grant-as-authority-to-apps": [
+                "$XSAPPNAME(application,sap-provisioning,tenant-onboarding)"
+            ]
+        },
+        {
+            "name": "$XSAPPNAME.cds.Subscriber",
+            "description": "Subscribe to applications"
+        },
+        {
+            "name": "uaa.user",
+            "description": "UAA"
+        }
+        ,
+        {
+            "name": "$XSAPPNAME.Viewer",
+            "granted-apps": ["$XSAPPNAME(application,dceproducts)"],
+            "description": "Viewer"
+        },
+        {
+            "name": "$XSAPPNAME.Admin",
+            "description": "Administrator"
+        }
+    ],
+    "foreign-scope-references": ["$ACCEPT_GRANTED_SCOPES"],
+    "authorities-inheritance": false,
+    "authorities": [
+        "$XSAPPNAME.cds.Subscriber"
+    ],
+    "role-templates": [
+        {
+            "name": "Token_Exchange",
+            "description": "UAA Token Exchange",
+            "scope-references": [
+                "uaa.user"
+            ]
+        }
+        ,
+        {
+            "name": "Subscriber",
+            "description": "Subscriber",
+            "scope-references": [
+                "$XSAPPNAME.cds.Subscriber"
+            ]
+        }
+        ,
+        {
+            "name": "Viewer",
+            "description": "Viewer",
+            "scope-references": [
+                "$XSAPPNAME.Viewer"
+            ]
+        },
+        {
+            "name": "Admin",
+            "description": "Administrator",
+            "scope-references": [
+                "$XSAPPNAME.Admin"
+            ]
+        }
+    ]
+    ,
+    "role-collections": [
+        {
+            "name": "poc_Subscriber",
+            "description": "Subscriber access",
+            "role-template-references": [
+                "$XSAPPNAME.Subscriber"
+            ]
+        },
+        {
+            "name": "poc_Viewer",
+            "description": "Viewing access",
+            "role-template-references": [
+                "$XSAPPNAME.Viewer"
+            ]
+        },
+        {
+            "name": "poc_Administrator",
+            "description": "Administrative access",
+            "role-template-references": [
+                "$XSAPPNAME.Admin"
+            ]
+        }
+    ]
+    ,
+    "oauth2-configuration": {
+        "token-validity": 3600,
+        "redirect-uris": [
+            "https://*-poc-app.cfapps.*.hana.ondemand.com/login/callback"
+        ]
+    }
+}

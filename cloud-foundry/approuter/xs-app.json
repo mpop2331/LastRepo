@@ -1,0 +1,39 @@
+{
+  "welcomeFile": "/cp.portal",
+  "authenticationMethod": "route",
+  "logout": {
+    "logoutEndpoint": "/do/logout"
+  },
+  "routes": [
+    {
+			"source": "^(.*)$",
+			"target": "$1",
+			"service": "html5-apps-repo-rt",
+			"authenticationType": "xsuaa"
+		},
+    {
+      "source": "^/bedeloittedcedceproducts/(.*)$",
+      "target": "/bedeloittedcedceproducts/$1",
+      "service": "html5-apps-repo-rt"
+    },
+    {
+      "source": "^/catalog/(.*)$",
+      "csrfProtection": false,
+      "authenticationType": "xsuaa",
+      "scope": "$XSAPPNAME.Viewer",
+      "destination": "poc-srv-api"
+    },
+    {
+      "source": "^/v2/catalog/(.*)$",
+      "csrfProtection": false,
+      "authenticationType": "xsuaa",
+      "scope": "$XSAPPNAME.Viewer",
+      "destination": "poc-srv-api"
+    },
+    {
+      "source": "^/-/cds/.*",
+      "authenticationType": "none",
+      "destination": "mtx"
+    }
+  ]
+}

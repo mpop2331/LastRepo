@@ -1,0 +1,275 @@
+_schema-version: '3.2'
+ID: poc
+version: 0.0.1
+
+parameters:
+  enable-parallel-deployments: true
+  keep-existing-routes: true
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm install --production
+        - npx -p @sap/cds-dk cds build --production
+
+modules:
+  # --------------------- SERVER MODULE ------------------------
+  - name: poc-srv
+  # ------------------------------------------------------------
+    type: nodejs
+    path: gen/srv
+    build-parameters:
+      ignore:
+        - default-*.json
+        - .env
+        - "*node_modules*"
+        - package-lock.json
+    parameters:
+      buildpack: nodejs_buildpack
+      memory: 512M
+      disk-quota: 1024M
+    
+    requires:
+      - name: poc-uaa
+      - name: poc-dest
+      - name: poc-portal
+      - name: poc-registry
+      - name: poc-sm      
+      - name: poc-approuter
+        properties:
+          APP_PROTOCOL: ~{app-protocol}
+          APP_URI: ~{app-uri}
+    provides:
+      - name: poc-srv-api
+        properties:
+          srv-url: ${default-url}
+      - name: mtx-srv-api
+        properties:
+          mtx-url: ${default-url}
+  
+
+  # ------------------ APP ROUTER MODULE -----------------------
+  - name: poc-app
+  # ------------------------------------------------------------
+    type: approuter.nodejs
+    path: cloud-foundry/approuter
+    build-parameters:
+      ignore:
+        - default-*.json
+        - .env
+        - "*node_modules*"
+        - package-lock.json
+    parameters:
+      memory: 256M
+      disk-quota: 1024M
+      keep-existing-routes: true
+    properties:
+      TENANT_HOST_PATTERN: "^(.*)-${space}-${app-name}.${default-domain}"
+      MERGE_CSP_HEADERS: TRUE
+      SEND_XFRAMEOPTIONS: TRUE
+      X-FRAME-OPTIONS: "SAMEORIGIN"
+    requires:
+      - name: poc-uaa
+      - name: poc-dest
+      - name: poc-html5-repo-runtime
+      - name: poc-portal
+      - name: poc-registry 
+      - name: mtx-srv-api
+        group: destinations
+        properties:
+          name: mtx
+          url: ~{mtx-url}
+          forwardAuthToken: true
+          timeout: 600000
+    provides:
+      - name: poc-approuter
+        properties:
+          app-protocol: ${protocol}
+          app-uri: ${default-uri}
+
+# --------------------- WEBAPP DEPLOYER ----------------------
+  - name: poc-app-deployer
+  # ------------------------------------------------------------
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: poc-html5-repo-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: gen/app
+      requires:
+      - name: bedeloittedcedceproducts
+        target-path: gen/app
+        artifacts:
+          - bedeloittedcedceproducts.zip   
+  # --------------------- UI MODULES ---------------------
+  - name: bedeloittedcedceproducts
+  # ------------------------------------------------------------
+    type: html5
+    path: app/dceproducts
+    build-parameters:
+      build-result: dist
+      builder: custom
+      ignore: [ 'node_modules/',  'default-env.json', 'manifest*.yml' ]
+      commands:
+      - npm ci
+      - npm run build:cf
+      supported-platforms: []
+  # --------------------- PORTAL DEPLOYER ----------------------
+  - name: poc-portal-deployer
+    type: com.sap.application.content
+    path: cloud-foundry/portal-deployer
+    parameters:
+      config:
+        TENANT_HOST_PATTERN: "^(.*)-${space}-poc-app.${default-domain}"
+        MERGE_CSP_HEADERS: TRUE
+        SEND_XFRAMEOPTIONS: FALSE
+        X-FRAME-OPTIONS: "SAMEORIGIN"
+    requires:
+      - name: poc-portal
+        parameters:
+          content-target: true
+          service-key:
+            name: content-deploy-key
+            config:
+              content-endpoint: developer
+      - name: poc-html5-repo-host
+      - name: poc-uaa
+      - name: poc-registry
+resources:
+  # ----------------------- UAA SERVICE ------------------------
+  - name: poc-uaa
+  # ------------------------------------------------------------
+    type: org.cloudfoundry.managed-service
+    properties:
+      XSAPPNAME: ${xsuaa-app}
+    parameters:
+      service: xsuaa
+      service-plan: application
+      path: ./xs-security.json
+      xsuaa-app: ${org}-${space}-poc
+      config:
+        xsappname: ${xsuaa-app}
+        tenant-mode: shared
+
+  # -------------------- DESTINATION SERVICE -------------------
+  - name: poc-dest
+  # ------------------------------------------------------------
+    type: org.cloudfoundry.managed-service
+    requires:
+      - name: poc-srv-api
+    parameters:
+      service: destination
+      service-plan: lite
+      config:
+        HTML5Runtime_enabled: true
+        version: 1.0.0
+        init_data:
+          instance:
+            existing_destinations_policy: update
+            destinations:
+              - Name: poc-srv-api
+                Description: SusaaS Service API
+                URL: ~{poc-srv-api/srv-url}
+                Type: HTTP
+                ProxyType: Internet
+                Authentication: NoAuthentication
+                HTML5.DynamicDestination: true
+                forwardAuthToken: true           
+              - Name: ui5
+                Authentication: NoAuthentication
+                ProxyType: Internet
+                Type: HTTP
+                URL: https://ui5.sap.com
+              - Name: poc-API_SALES_ORDER_SRV
+                Description: SAP S/4HANA Cloud Sales Order (A2X)
+                URL: https://sandbox.api.sap.com
+                Type: HTTP
+                ProxyType: Internet
+                Authentication: NoAuthentication
+                URL.headers.APIKey: <SetValueInCockpit>
+                URL.headers.Application-Interface-Key: <SetValueInCockpit>
+                HTML5.DynamicDestination: true
+              - Name: poc-cfapi
+                Description: CF Cloud Controller API
+                URL: ${controller-url}
+                Type: HTTP
+                ProxyType: Internet
+                Authentication: OAuth2Password
+                tokenServiceURL: ${authorization-url}/oauth/token
+                clientId: cf
+                clientSecret:
+                User: <SetValueInCockpit>
+                Password: <SetValueInCockpit>
+        build-parameters:
+          no-source: true
+  - name: poc-html5-repo-host
+  # -----------------------------------------------------------------
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service-plan: app-host
+      service: html5-apps-repo
+      config:
+        sizeLimit: 1
+
+  # ----------------- HTML REPO RUNTIME SERVICE(Be Used by UI) -------
+  - name: poc-html5-repo-runtime
+  # ------------------------------------------------------------------
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service-plan: app-runtime
+      service-name: poc-html5-repo-runtime
+      service: html5-apps-repo
+
+  #   ┌─────────────────────────────────────┐   #
+  #   │            PORTAL SERVICE           │   #
+  #   └─────────────────────────────────────┘   #
+  #
+  - name: poc-portal
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: portal
+      service-plan: standard
+
+  # --------------------- REGISTRY SERVICE ---------------------
+  - name: poc-registry
+  # ------------------------------------------------------------
+    type: org.cloudfoundry.managed-service
+    requires:
+      - name: poc-uaa
+      - name: mtx-srv-api
+    parameters:
+      service: saas-registry
+      service-plan: application
+      service-name: poc-registry
+      config:
+        appName: ~{poc-uaa/XSAPPNAME}
+        xsappname: ~{poc-uaa/XSAPPNAME}
+        displayName: ~{poc-uaa/XSAPPNAME}
+        description: |-
+          org:   ${org}
+          space: ${space}
+          XSAPPNAME: ~{poc-uaa/XSAPPNAME}
+          onSubscription: ~{mtx-srv-api/mtx-url}/-/cds/saas-provisioning/tenant/{tenantId}
+        category: "CAP Multitenant"
+        appUrls:
+          onSubscription: ~{mtx-srv-api/mtx-url}/-/cds/saas-provisioning/tenant/{tenantId}
+          getDependencies: ~{mtx-srv-api/mtx-url}/-/cds/saas-provisioning/dependencies
+          onSubscriptionAsync: false
+          onUnSubscriptionAsync: false
+          callbackTimeoutMillis: 300000
+
+  # ------------------- SERVICE MANAGER SERVICE ----------------
+  - name: poc-sm
+  # ------------------------------------------------------------
+    type: org.cloudfoundry.managed-service
+    requires:
+     - name: poc-uaa
+    parameters:
+       service: service-manager
+       service-plan: container
+       polling_timeout_seconds: 240
+       config:
+         acquireTimeoutMillis: max
+         polling_timeout_seconds: 480

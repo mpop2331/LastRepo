@@ -1,0 +1,21 @@
+{
+  "requires": {
+    "[hybrid]": {
+      "db": {
+        "binding": {
+          "type": "cf",
+          "apiEndpoint": "https://api.cf.eu10.hana.ondemand.com",
+          "org": "Deloitte Consulting & Advisory CVBA_tc-dev-irnvbw90",
+          "space": "DEV",
+          "instance": "poc-db",
+          "key": "poc-db-key",
+          "resolved": false
+        },
+        "kind": "hana",
+        "vcap": {
+          "name": "db"
+        }
+      }
+    }
+  }
+}
