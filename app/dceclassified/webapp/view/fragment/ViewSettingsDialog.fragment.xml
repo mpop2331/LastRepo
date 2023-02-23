@@ -1,0 +1,20 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+	<ViewSettingsDialog id="viewSettingsDialog" confirm=".onConfirmViewSettingsDialog">
+		<sortItems>
+			<ViewSettingsItem text="{i18n>tableProdColumnTitle}" key="ID" selected="true"/>
+			<ViewSettingsItem text="{i18n>tablePDescColumnTitle}" key="Description"/>
+			<ViewSettingsItem text="{i18n>tableSchemeColumnTitle}" key="Scheme"/>
+			<ViewSettingsItem text="{i18n>tableCodeColumnTitle}" key="Code"/>
+			<ViewSettingsItem text="{i18n>tableByColumnTitle}" key="Description"/>
+			<ViewSettingsItem text="{i18n>tableOnColumnTitle}" key="ClassifiedOn"/>
+		</sortItems>
+		<groupItems>
+			<ViewSettingsItem text="{i18n>tableProdColumnTitle}" key="ID"/>
+			<ViewSettingsItem text="{i18n>tablePDescColumnTitle}" key="Description"/>
+			<ViewSettingsItem text="{i18n>tableSchemeColumnTitle}" key="Scheme"/>
+			<ViewSettingsItem text="{i18n>tableCodeColumnTitle}" key="Code"/>
+			<ViewSettingsItem text="{i18n>tableByColumnTitle}" key="ClassifiedBy"/>
+			<ViewSettingsItem text="{i18n>tableOnColumnTitle}" key="ClassifiedOn"/>
+		</groupItems>
+	</ViewSettingsDialog>
+</core:FragmentDefinition>

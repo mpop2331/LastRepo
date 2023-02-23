@@ -1,0 +1,158 @@
+<mvc:View xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns:semantic="sap.f.semantic"
+	xmlns:fb="sap.ui.comp.filterbar" controllerName="be.deloitte.dce.dceclassified.controller.Worklist">
+	<semantic:SemanticPage id="page" headerPinnable="false" toggleHeaderOnTitleClick="false" showFooter="false">
+		<!--<semantic:titleHeading>-->
+		<!--	<Title text="{i18n>worklistTitle}"/>-->
+		<!--</semantic:titleHeading>-->
+		<semantic:headerContent>
+			<fb:FilterBar id="mainFilterBar" showFilterConfiguration="false" showGoOnFB="true" search="onSearch" showClearOnFB="true" clear="onFBClear">
+				<fb:filterGroupItems>
+					<fb:FilterGroupItem groupName="G1" name="prodID" visibleInFilterBar="true" label="{i18n>tableProdColumnTitle}">
+						<fb:control>
+							<SearchField id="fbsfProdId" tooltip="{i18n>worklistSearchTooltip}" search="onSearch" width="auto"/>
+						</fb:control>
+					</fb:FilterGroupItem>
+					<fb:FilterGroupItem groupName="G1" name="prodDesc" visibleInFilterBar="true" label="{i18n>tablePDescColumnTitle}">
+						<fb:control>
+							<SearchField id="fbsfProdDesc" tooltip="{i18n>worklistSearchTooltip}" search="onSearch" width="auto"/>
+						</fb:control>
+					</fb:FilterGroupItem>
+					<fb:FilterGroupItem groupName="G1" name="scheme" visibleInFilterBar="true" label="{i18n>tableSchemeColumnTitle}">
+						<fb:control>
+							<ComboBox id="fbcbScheme" items="{path: '/SchemeUser'}" selectionChange="onSearch">
+								<core:Item key="{Scheme}" text="{Scheme}"/>
+							</ComboBox>
+						</fb:control>
+					</fb:FilterGroupItem>
+					<fb:FilterGroupItem groupName="G1" name="nsCode" visibleInFilterBar="true" label="{i18n>tableCodeColumnTitle}">
+						<fb:control>
+							<SearchField id="fbsfNsCode" tooltip="{i18n>worklistSearchTooltip}" search="onSearch" width="auto"/>
+						</fb:control>
+					</fb:FilterGroupItem>
+					<fb:FilterGroupItem groupName="G1" name="classBy" visibleInFilterBar="true" label="{i18n>tableByColumnTitle}">
+						<fb:control>
+							<SearchField id="fbsfClassBy" tooltip="{i18n>worklistSearchTooltip}" search="onSearch" width="auto"/>
+						</fb:control>
+					</fb:FilterGroupItem>
+					<fb:FilterGroupItem groupName="G1" name="uploadedOn" visibleInFilterBar="true" label="{i18n>tableUploadedOnTitle}">
+						<fb:control>
+							<DateRangeSelection id="fbsfUploadedOn" displayFormat="dd/MM/yyyy" change="onSearch"/>
+						</fb:control>
+					</fb:FilterGroupItem>
+					<fb:FilterGroupItem groupName="G1" name="classOn" visibleInFilterBar="true" label="{i18n>tableOnColumnTitle}">
+						<fb:control>
+							<DateRangeSelection id="fbsfClassOn" displayFormat="dd/MM/yyyy" change="onSearch"/>
+						</fb:control>
+					</fb:FilterGroupItem>
+					<fb:FilterGroupItem groupName="G1" name="Status" visibleInFilterBar="true" label="Status">
+						<fb:control>
+							<ComboBox id="fbsfStatus" items="{path: '/Status'}" selectionChange="onSearch" selectedKey="3">
+								<core:Item key="{ID}" text="{Name}"/>
+							</ComboBox>
+						</fb:control>
+					</fb:FilterGroupItem>
+					<fb:FilterGroupItem id="attr1" groupName="G1" name="attr1" visible="false" visibleInFilterBar="true" label="Attribute1">
+						<fb:control>
+							<SearchField id="fbsfAttr1" tooltip="{i18n>worklistSearchTooltip}" search="onSearch" width="auto"/>
+						</fb:control>
+					</fb:FilterGroupItem>
+					<fb:FilterGroupItem id="attr2" groupName="G1" name="attr2" visible="false" visibleInFilterBar="true" label="Attribute2">
+						<fb:control>
+							<SearchField id="fbsfAttr2" tooltip="{i18n>worklistSearchTooltip}" search="onSearch" width="auto"/>
+						</fb:control>
+					</fb:FilterGroupItem>
+					<fb:FilterGroupItem id="attr3" groupName="G1" name="attr3" visible="false" visibleInFilterBar="true" label="Attribute3">
+						<fb:control>
+							<SearchField id="fbsfAttr3" tooltip="{i18n>worklistSearchTooltip}" search="onSearch" width="auto"/>
+						</fb:control>
+					</fb:FilterGroupItem>
+					<fb:FilterGroupItem id="attr4" groupName="G1" name="attr4" visible="false" visibleInFilterBar="true" label="Attribute4">
+						<fb:control>
+							<SearchField id="fbsfAttr4" tooltip="{i18n>worklistSearchTooltip}" search="onSearch" width="auto"/>
+						</fb:control>
+					</fb:FilterGroupItem>
+					<fb:FilterGroupItem id="attr5" groupName="G1" name="attr5" visible="false" visibleInFilterBar="true" label="Attribute5">
+						<fb:control>
+							<SearchField id="fbsfAttr5" tooltip="{i18n>worklistSearchTooltip}" search="onSearch" width="auto"/>
+						</fb:control>
+					</fb:FilterGroupItem>
+				</fb:filterGroupItems>
+			</fb:FilterBar>
+		</semantic:headerContent>
+		<semantic:content>
+			<Table id="tabMain" items="{path: '/Classifications', sort:{path:'ID'}}" width="auto" noDataText="{worklistView>/tableNoDataText}"
+				busyIndicatorDelay="{worklistView>/tableBusyDelay}" growing="true" growingScrollToLoad="true" fixedLayout="false"
+				updateFinished="onUpdateFinished" mode="MultiSelect" selectionChange="onTabSelectChange">
+				<headerToolbar>
+					<Toolbar>
+						<Title id="tableHeader" text="{worklistView>/worklistTableTitle}"/>
+						<ToolbarSpacer/>
+						<Button icon="sap-icon://download" tooltip="Download All" press="onDownload"/>
+						<Button id="filterButton" tooltip="Filters" press=".onFilterBtnPress" icon="sap-icon://filter" type="Transparent"/>
+						<Button id="sortButton" tooltip="Sorters" press=".onOpenViewSettings" icon="sap-icon://sort" type="Transparent"/>
+						<Button id="groupButton" tooltip="Groupers" press=".onOpenViewSettings" icon="sap-icon://group-2" type="Transparent"/>
+					</Toolbar>
+				</headerToolbar>
+				<columns>
+					<Column id="nameColumn">
+						<Text text="{i18n>tableProdColumnTitle}" id="nameColumnTitle"/>
+					</Column>
+					<Column id="DescriptionColumn">
+						<Text text="{i18n>tablePDescColumnTitle}" maxLines="2" id="descriptionColumnTitle"/>
+					</Column>
+					<Column id="schemeColumn">
+						<Text text="{i18n>tableSchemeColumnTitle}" id="schemeColumnTitle"/>
+					</Column>
+					<Column id="CodeColumn">
+						<Text text="{i18n>tableCodeColumnTitle}" id="codeColumnTitle"/>
+					</Column>
+					<Column id="byColumn">
+						<Text text="{i18n>tableByColumnTitle}" id="byColumnTitle"/>
+					</Column>
+					<Column id="upOnColumn">
+						<Text text="{i18n>tableUploadedOnTitle}" id="upOnColumnTitle"/>
+					</Column>
+					<Column id="onColumn">
+						<Text text="{i18n>tableOnColumnTitle}" id="onColumnTitle"/>
+					</Column>
+					<Column id="statColumn">
+						<Text text="{i18n>tableStatColumnTitle}" id="staColumnTitle"/>
+					</Column>
+					<Column id="assOnColumn">
+						<Text text="{i18n>tableAssOnColumnTitle}" id="assOnColumnTitle"/>
+					</Column>
+					<Column id="IconColumn">
+						<Text id="IconColumnTitle"/>
+					</Column>
+				</columns>
+				<items>
+					<ColumnListItem xmlns:action="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1" id="colList" type="Navigation"
+						press="onPress" action:wiring="\{'press':\{'navigation':\{'routeName':'Object'\}\}\}">
+						<cells>
+							<Text text="{ID}" maxLines="1"/>
+							<Text text="{path: 'Description', formatter: '.formatter.specialChar'}" maxLines="4"/>
+							<Text text="{Scheme}" maxLines="1"/>
+							<Text text="{Code}" maxLines="1"/>
+							<Text text="{ClassifiedBy}"/>
+							<Text text="{ path: 'UploadedOn', formatter: '.formatter.formatterDate'}" maxLines="1"/>
+							<Text text="{ path: 'ClassifiedOn', formatter: '.formatter.formatterDate'}" maxLines="1"/>
+							<Text text="{ path: 'ClassStatus', formatter: '.formatter.status'}"/>
+							<Button visible="{= ${ClassStatus} === 0 || ${ClassStatus} === -4}" icon="sap-icon://employee-approvals" press="onAssign" tooltip="assign"/>
+							<core:Icon src="sap-icon://post" class="size2" visible="{= ${Comment} !== null}" tooltip="{Comment}">
+								<core:layoutData>
+									<FlexItemData growFactor="1"/>
+								</core:layoutData>
+							</core:Icon>
+						</cells>
+					</ColumnListItem>
+				</items>
+			</Table>
+		</semantic:content>
+		<semantic:footerCustomActions>
+			<Button id="btnAssign" press="onAssignSelected" icon="sap-icon://message-success" type="Accept" visible="false" enabled="false"
+				text="Assign the selected items"/>
+			<Button id="btnDelete" press="onDelete" icon="sap-icon://delete" type="Reject" visible="false" enabled="false"
+				text="Delete the selected classifications"/>
+		</semantic:footerCustomActions>
+	</semantic:SemanticPage>
+</mvc:View>

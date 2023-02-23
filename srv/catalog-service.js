@@ -2,18 +2,13 @@ const cds = require("@sap/cds");
 
 module.exports = cds.service.impl(async function (service) {
     const db = await cds.connect.to("db");
-    const {Products, Classifications, User} = this.entities;
+    const {Products, Classifications, Users} = this.entities;
     
     this.on("POST", Classifications ,async (req) => {
         const {Product_GUID} = req.data;
         let classificationRes = await db.read(Classifications).where({Product_GUID:Product_GUID,Status:3});
-        
-        console.log("______________________");
-        console.log(classificationRes);
-        console.log("______________________");
 
         if(classificationRes.length === 0){ //don`t have entires so not checking required
-
             await db.post(Classifications).entries(req.data);
             return req.data;
         }
@@ -30,7 +25,7 @@ module.exports = cds.service.impl(async function (service) {
     this.on("getCurrentUser",async(req)=>{
         
         const sUser = req.user.id;
-        let aUserres = await db.read(User).where({User:sUser});
+        let aUserres = await db.read(Users).where({User:sUser});
 
         console.log("____________________RES");
         console.log(sUser);

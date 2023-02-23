@@ -17,6 +17,11 @@
       "service": "html5-apps-repo-rt"
     },
     {
+      "source": "^/bedeloittedcedceclassified/(.*)$",
+      "target": "/bedeloittedcedceclassified/$1",
+      "service": "html5-apps-repo-rt"
+    },
+    {
       "source": "^/catalog/(.*)$",
       "csrfProtection": false,
       "authenticationType": "xsuaa",

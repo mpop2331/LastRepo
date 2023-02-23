@@ -1,0 +1,20 @@
+
+POST http://localhost:4004/dispatcher/dispatch
+Authorization: Basic joe:
+Content-Type: application/json
+
+{
+    "input":{
+        "method":"DELETE",
+        "entity":"Classification",
+        "body":{
+            "Products":[
+                {
+                    "GUID":"99800370DEE11E27180095FA61CBFD4E",
+                    "Scheme": "EU_IMP"
+                    
+                }
+            ]
+        }
+    }
+}

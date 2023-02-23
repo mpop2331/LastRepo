@@ -27,7 +27,8 @@
     "@sap/ux-specification": "^1.96.4"
   },
   "sapux": [
-    "app/dceproducts"
+    "app/dceproducts",
+    "app/dceclassified"
   ],
   "scripts": {
     "start": "cds run"
@@ -118,7 +119,6 @@
       ,
       "API_SALES_ORDER_SRV": {
         "kind": "odata-v2",
-        "model": "srv/external/API_SALES_ORDER_SRV",
         "credentials": {
           "[production]": {
             "destination": "poc-API_SALES_ORDER_SRV",

@@ -102,8 +102,11 @@ modules:
       - name: bedeloittedcedceproducts
         target-path: gen/app
         artifacts:
-          - bedeloittedcedceproducts.zip   
+          - bedeloittedcedceproducts.zip
+       
   # --------------------- UI MODULES ---------------------
+  
+  
   - name: bedeloittedcedceproducts
   # ------------------------------------------------------------
     type: html5
@@ -116,6 +119,7 @@ modules:
       - npm ci
       - npm run build:cf
       supported-platforms: []
+  
   # --------------------- PORTAL DEPLOYER ----------------------
   - name: poc-portal-deployer
     type: com.sap.application.content

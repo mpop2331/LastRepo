@@ -29,11 +29,12 @@ Content-Type: application/json
         "SentToML": null,
         "ValidForML": 1
 }
-
+##
+#
 
 GET http://localhost:4004/catalog/getCurrentUser()
 Authorization: Basic admin1@test.com:
 Content-Type: application/json
 
-##
-#
+
+GET http://localhost:4004/dispatcher/dispatch(to='1')

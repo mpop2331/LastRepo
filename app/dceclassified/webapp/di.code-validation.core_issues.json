@@ -1,0 +1,74 @@
+{
+    "version": "1.0.0",
+    "results": {
+        "@sap/di.code-validation.js": {
+            "issues": {
+                "webapp/controller/Worklist.controller.js": [
+                    {
+                        "category": "Fiori Architectural Guidelines",
+                        "checker": "ESLint",
+                        "column": 5,
+                        "helpUrl": "https://help.hana.ondemand.com/webide/frameset.htm?499b03d3fb8a427da8172fb29e90b11c.html",
+                        "line": 99,
+                        "message": "Direct history manipulation, does not work with deep links, use router and navigation events instead",
+                        "path": "webapp/controller/Worklist.controller.js",
+                        "ruleId": "sap-no-history-manipulation",
+                        "severity": "warning"
+                    }
+                ],
+                "webapp/test/integration/arrangements/Arrangement.js": [
+                    {
+                        "category": "Best Practices",
+                        "checker": "ESLint",
+                        "column": 3,
+                        "helpUrl": "http://eslint.org/docs/rules/no-param-reassign",
+                        "line": 9,
+                        "message": "Assignment to function parameter 'sUrlParameters'.",
+                        "path": "webapp/test/integration/arrangements/Arrangement.js",
+                        "ruleId": "no-param-reassign",
+                        "severity": "info"
+                    },
+                    {
+                        "category": "Best Practices",
+                        "checker": "ESLint",
+                        "column": 4,
+                        "helpUrl": "http://eslint.org/docs/rules/no-param-reassign",
+                        "line": 12,
+                        "message": "Assignment to function parameter 'sHash'.",
+                        "path": "webapp/test/integration/arrangements/Arrangement.js",
+                        "ruleId": "no-param-reassign",
+                        "severity": "info"
+                    },
+                    {
+                        "category": "Best Practices",
+                        "checker": "ESLint",
+                        "column": 4,
+                        "helpUrl": "http://eslint.org/docs/rules/no-param-reassign",
+                        "line": 14,
+                        "message": "Assignment to function parameter 'sHash'.",
+                        "path": "webapp/test/integration/arrangements/Arrangement.js",
+                        "ruleId": "no-param-reassign",
+                        "severity": "info"
+                    },
+                    {
+                        "category": "Best Practices",
+                        "checker": "ESLint",
+                        "column": 4,
+                        "helpUrl": "http://eslint.org/docs/rules/no-param-reassign",
+                        "line": 24,
+                        "message": "Assignment to function parameter 'oOptions'.",
+                        "path": "webapp/test/integration/arrangements/Arrangement.js",
+                        "ruleId": "no-param-reassign",
+                        "severity": "info"
+                    }
+                ]
+            }
+        },
+        "@sap/di.code-validation.xml": {
+            "issues": {}
+        },
+        "@sap/di.code-validation.json": {
+            "issues": {}
+        }
+    }
+}
